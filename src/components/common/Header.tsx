@@ -6,36 +6,24 @@ import {
   Search,
   Smartphone,
   Monitor,
-  UserCheck,
-  GraduationCap,
+  Globe,
   Sparkles,
   X,
+  Crown,
 } from 'lucide-react';
-import { UserRole } from '../../types';
 
 export const Header: React.FC = () => {
   const {
-    currentRole,
-    setRole,
     currentUser,
     setIsDrawerOpen,
     isMobileFrame,
     setIsMobileFrame,
     searchQuery,
     setSearchQuery,
-    currentScreen,
     setCurrentScreen,
   } = useApp();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isRoleDropdownOpen, setIsRoleDropdownOpen] = useState(false);
-
-  const roleLabels: Record<UserRole, { label: string; color: string; icon: string }> = {
-    super_admin: { label: 'Admin', color: 'bg-amber-500 text-white', icon: '👑' },
-    teacher: { label: 'Teacher', color: 'bg-blue-600 text-white', icon: '👨‍🏫' },
-    student: { label: 'Student', color: 'bg-emerald-600 text-white', icon: '🎓' },
-    parent: { label: 'Parent', color: 'bg-purple-600 text-white', icon: '👨‍👩‍👦' },
-  };
 
   return (
     <header className="sticky top-0 z-30 bg-blue-900 text-white shadow-md">
@@ -69,8 +57,18 @@ export const Header: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Search, Role Switcher, Frame Toggle, Profile */}
+        {/* Right: Landing Button, Admin Badge, Search, Frame Toggle */}
         <div className="flex items-center gap-1.5">
+          {/* Public Website / Landing Page Link */}
+          <button
+            onClick={() => setCurrentScreen('landing')}
+            className="hidden sm:flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-blue-800 hover:bg-blue-700 text-amber-300 border border-amber-400/30 transition shadow-xs"
+            title="View Public Landing Page"
+          >
+            <Globe className="w-3.5 h-3.5 text-amber-300" />
+            <span>Website</span>
+          </button>
+
           {/* Quick Search Toggle */}
           {isSearchOpen ? (
             <div className="flex items-center bg-blue-800/80 rounded-full px-2 py-0.5 border border-blue-700">
@@ -102,41 +100,14 @@ export const Header: React.FC = () => {
             </button>
           )}
 
-          {/* Role Switcher Pill */}
-          <div className="relative">
-            <button
-              onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-              className={`flex items-center gap-1 text-[11px] font-medium px-2 py-1 rounded-full shadow-sm transition border border-white/20 ${roleLabels[currentRole].color}`}
-            >
-              <span>{roleLabels[currentRole].icon}</span>
-              <span className="hidden xs:inline">{roleLabels[currentRole].label}</span>
-            </button>
-
-            {isRoleDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl py-2 z-50 text-slate-800 border border-slate-100">
-                <div className="px-3 py-1.5 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  Switch User Portal
-                </div>
-                {(['super_admin', 'teacher', 'student', 'parent'] as UserRole[]).map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => {
-                      setRole(r);
-                      setIsRoleDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-blue-50 transition ${
-                      currentRole === r ? 'font-bold text-blue-700 bg-blue-50/50' : 'text-slate-700'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <span>{roleLabels[r].icon}</span>
-                      <span>{roleLabels[r].label} Portal</span>
-                    </span>
-                    {currentRole === r && <UserCheck className="w-3.5 h-3.5 text-blue-600" />}
-                  </button>
-                ))}
-              </div>
-            )}
+          {/* Super Admin User Badge */}
+          <div
+            onClick={() => setCurrentScreen('profile')}
+            className="flex items-center gap-1.5 text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-amber-400 text-blue-950 border border-amber-300 cursor-pointer shadow-xs hover:bg-amber-300 transition"
+            title={`Logged in as ${currentUser.name}`}
+          >
+            <Crown className="w-3.5 h-3.5 text-blue-950" />
+            <span className="truncate max-w-[100px] sm:max-w-none">{currentUser.name.split(' ')[0]}</span>
           </div>
 
           {/* Device Simulator Toggle */}
@@ -163,3 +134,4 @@ export const Header: React.FC = () => {
     </header>
   );
 };
+

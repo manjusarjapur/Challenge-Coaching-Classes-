@@ -28,6 +28,7 @@ import {
 } from '../data/mockData';
 
 export type ScreenType =
+  | 'landing'
   | 'splash'
   | 'welcome'
   | 'dashboard'
@@ -57,6 +58,7 @@ interface AppContextType {
   setIsDrawerOpen: (open: boolean) => void;
   searchQuery: string;
   setSearchQuery: (q: string) => void;
+  isRealTimeActive: boolean;
   
   // Data State
   students: Student[];
@@ -105,27 +107,162 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+// Helper for persistent reactive state
+const getStoredData = <T,>(key: string, fallback: T): T => {
+  try {
+    const item = localStorage.getItem(`ccc_${key}`);
+    return item ? JSON.parse(item) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+
+const setStoredData = <T,>(key: string, data: T) => {
+  try {
+    localStorage.setItem(`ccc_${key}`, JSON.stringify(data));
+    // Trigger custom storage event for real-time reactivity within same window
+    window.dispatchEvent(new Event('ccc_realtime_update'));
+  } catch (e) {
+    console.error('Storage error', e);
+  }
+};
+
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentRole, setCurrentRole] = useState<UserRole>('super_admin');
-  const [currentScreen, setCurrentScreen] = useState<ScreenType>('dashboard');
+  const [currentScreen, setCurrentScreen] = useState<ScreenType>('landing');
   const [isMobileFrame, setIsMobileFrame] = useState<boolean>(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isRealTimeActive, setIsRealTimeActive] = useState<boolean>(true);
 
-  const [students, setStudents] = useState<Student[]>(initialStudents);
-  const [teachers, setTeachers] = useState<Teacher[]>(initialTeachers);
-  const [parents, setParents] = useState<Parent[]>(initialParents);
-  const [materials, setMaterials] = useState<StudyMaterial[]>(initialMaterials);
-  const [assignments, setAssignments] = useState<Assignment[]>(initialAssignments);
-  const [tests, setTests] = useState<Test[]>(initialTests);
-  const [testHistory, setTestHistory] = useState<TestAttempt[]>(sampleTestHistory);
-  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>(initialAttendanceRecords);
-  const [announcements, setAnnouncements] = useState<Announcement[]>(initialAnnouncements);
+  // Persistent Reactive Datasets
+  const [students, setStudentsState] = useState<Student[]>(() =>
+    getStoredData('students', initialStudents)
+  );
+  const [teachers, setTeachersState] = useState<Teacher[]>(() =>
+    getStoredData('teachers', initialTeachers)
+  );
+  const [parents, setParentsState] = useState<Parent[]>(() =>
+    getStoredData('parents', initialParents)
+  );
+  const [materials, setMaterialsState] = useState<StudyMaterial[]>(() =>
+    getStoredData('materials', initialMaterials)
+  );
+  const [assignments, setAssignmentsState] = useState<Assignment[]>(() =>
+    getStoredData('assignments', initialAssignments)
+  );
+  const [tests, setTestsState] = useState<Test[]>(() =>
+    getStoredData('tests', initialTests)
+  );
+  const [testHistory, setTestHistoryState] = useState<TestAttempt[]>(() =>
+    getStoredData('testHistory', sampleTestHistory)
+  );
+  const [attendanceRecords, setAttendanceRecordsState] = useState<AttendanceRecord[]>(() =>
+    getStoredData('attendance', initialAttendanceRecords)
+  );
+  const [announcements, setAnnouncementsState] = useState<Announcement[]>(() =>
+    getStoredData('announcements', initialAnnouncements)
+  );
   const [timetable] = useState<TimetableSlot[]>(initialTimetable);
 
   const [activeTest, setActiveTest] = useState<Test | null>(null);
   const [activeTestAttempt, setActiveTestAttempt] = useState<TestAttempt | null>(null);
+
+  // Set persistent setters
+  const setStudents = (action: React.SetStateAction<Student[]>) => {
+    setStudentsState((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      setStoredData('students', next);
+      return next;
+    });
+  };
+
+  const setTeachers = (action: React.SetStateAction<Teacher[]>) => {
+    setTeachersState((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      setStoredData('teachers', next);
+      return next;
+    });
+  };
+
+  const setParents = (action: React.SetStateAction<Parent[]>) => {
+    setParentsState((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      setStoredData('parents', next);
+      return next;
+    });
+  };
+
+  const setMaterials = (action: React.SetStateAction<StudyMaterial[]>) => {
+    setMaterialsState((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      setStoredData('materials', next);
+      return next;
+    });
+  };
+
+  const setAssignments = (action: React.SetStateAction<Assignment[]>) => {
+    setAssignmentsState((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      setStoredData('assignments', next);
+      return next;
+    });
+  };
+
+  const setTests = (action: React.SetStateAction<Test[]>) => {
+    setTestsState((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      setStoredData('tests', next);
+      return next;
+    });
+  };
+
+  const setTestHistory = (action: React.SetStateAction<TestAttempt[]>) => {
+    setTestHistoryState((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      setStoredData('testHistory', next);
+      return next;
+    });
+  };
+
+  const setAttendanceRecords = (action: React.SetStateAction<AttendanceRecord[]>) => {
+    setAttendanceRecordsState((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      setStoredData('attendance', next);
+      return next;
+    });
+  };
+
+  const setAnnouncements = (action: React.SetStateAction<Announcement[]>) => {
+    setAnnouncementsState((prev) => {
+      const next = typeof action === 'function' ? action(prev) : action;
+      setStoredData('announcements', next);
+      return next;
+    });
+  };
+
+  // Cross-tab real-time sync listener
+  React.useEffect(() => {
+    const handleSync = () => {
+      setStudentsState(getStoredData('students', initialStudents));
+      setTeachersState(getStoredData('teachers', initialTeachers));
+      setParentsState(getStoredData('parents', initialParents));
+      setMaterialsState(getStoredData('materials', initialMaterials));
+      setAssignmentsState(getStoredData('assignments', initialAssignments));
+      setTestsState(getStoredData('tests', initialTests));
+      setTestHistoryState(getStoredData('testHistory', sampleTestHistory));
+      setAttendanceRecordsState(getStoredData('attendance', initialAttendanceRecords));
+      setAnnouncementsState(getStoredData('announcements', initialAnnouncements));
+    };
+
+    window.addEventListener('storage', handleSync);
+    window.addEventListener('ccc_realtime_update', handleSync);
+    return () => {
+      window.removeEventListener('storage', handleSync);
+      window.removeEventListener('ccc_realtime_update', handleSync);
+    };
+  }, []);
 
   const currentUser = mockUserProfiles[currentRole];
 
@@ -274,6 +411,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsDrawerOpen,
         searchQuery,
         setSearchQuery,
+        isRealTimeActive,
         students,
         teachers,
         parents,

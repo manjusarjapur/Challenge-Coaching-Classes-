@@ -8,6 +8,7 @@ import { Toast } from './components/common/Toast';
 
 import { SplashScreen } from './components/screens/SplashScreen';
 import { WelcomeScreen } from './components/screens/WelcomeScreen';
+import { LandingPageScreen } from './components/screens/LandingPageScreen';
 import { HomeDashboardScreen } from './components/screens/HomeDashboardScreen';
 import { StudentsScreen } from './components/screens/StudentsScreen';
 import { TeachersScreen } from './components/screens/TeachersScreen';
@@ -28,6 +29,8 @@ const MainAppContent: React.FC = () => {
 
   const renderScreen = () => {
     switch (currentScreen) {
+      case 'landing':
+        return <LandingPageScreen />;
       case 'splash':
         return <SplashScreen />;
       case 'welcome':
@@ -65,7 +68,7 @@ const MainAppContent: React.FC = () => {
     }
   };
 
-  const isFullLanding = currentScreen === 'splash' || currentScreen === 'welcome';
+  const isFullLanding = currentScreen === 'splash' || currentScreen === 'welcome' || currentScreen === 'landing';
 
   return (
     <MobileFrame>

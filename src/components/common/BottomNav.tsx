@@ -13,7 +13,7 @@ export const BottomNav: React.FC = () => {
     { id: 'profile', label: 'Profile', icon: <User className="w-5 h-5" /> },
   ];
 
-  if (currentScreen === 'splash' || currentScreen === 'welcome') return null;
+  if (currentScreen === 'splash' || currentScreen === 'welcome' || currentScreen === 'landing') return null;
 
   return (
     <nav className="bg-white border-t border-slate-200 px-2 py-1.5 flex items-center justify-around z-20 shadow-lg">

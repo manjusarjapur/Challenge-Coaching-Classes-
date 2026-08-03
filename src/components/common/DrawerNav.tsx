@@ -19,7 +19,8 @@ import {
   Smartphone,
   ChevronRight,
   LogOut,
-  BookOpen,
+  Globe,
+  Sparkles,
 } from 'lucide-react';
 
 export const DrawerNav: React.FC = () => {
@@ -28,8 +29,6 @@ export const DrawerNav: React.FC = () => {
     setIsDrawerOpen,
     currentScreen,
     setCurrentScreen,
-    currentRole,
-    setRole,
     currentUser,
     isMobileFrame,
     setIsMobileFrame,
@@ -39,11 +38,12 @@ export const DrawerNav: React.FC = () => {
 
   const menuSections: {
     title: string;
-    items: { id: ScreenType; label: string; icon: React.ReactNode; roles?: string[] }[];
+    items: { id: ScreenType; label: string; icon: React.ReactNode }[];
   }[] = [
     {
-      title: 'Main Navigation',
+      title: 'Academy Portal',
       items: [
+        { id: 'landing', label: 'Public Website / Landing', icon: <Globe className="w-4 h-4 text-amber-500" /> },
         { id: 'dashboard', label: 'Home Dashboard', icon: <Home className="w-4 h-4" /> },
         { id: 'materials', label: 'Study Notes & Materials', icon: <FileText className="w-4 h-4" /> },
         { id: 'assignments', label: 'Assignments', icon: <ClipboardList className="w-4 h-4" /> },
@@ -53,7 +53,7 @@ export const DrawerNav: React.FC = () => {
       ],
     },
     {
-      title: 'Directory & Management',
+      title: 'Directory & Roster',
       items: [
         { id: 'students', label: 'Students Roster', icon: <GraduationCap className="w-4 h-4" /> },
         { id: 'teachers', label: 'Teachers Directory', icon: <Users className="w-4 h-4" /> },
@@ -69,7 +69,7 @@ export const DrawerNav: React.FC = () => {
       ],
     },
     {
-      title: 'Account & Preferences',
+      title: 'Account & Settings',
       items: [
         { id: 'profile', label: 'My Profile', icon: <User className="w-4 h-4" /> },
         { id: 'settings', label: 'App Settings', icon: <Settings className="w-4 h-4" /> },
@@ -111,34 +111,27 @@ export const DrawerNav: React.FC = () => {
             <img
               src={currentUser.avatar}
               alt={currentUser.name}
-              className="w-10 h-10 rounded-full object-cover border-2 border-amber-400"
+              className="w-10 h-10 rounded-full object-cover border-2 border-amber-400 shadow-sm"
             />
             <div className="overflow-hidden">
-              <p className="text-xs font-bold truncate text-white">{currentUser.name}</p>
-              <p className="text-[10px] text-blue-200 capitalize font-medium flex items-center gap-1">
+              <p className="text-xs font-black truncate text-white">{currentUser.name}</p>
+              <p className="text-[10px] text-amber-300 font-bold flex items-center gap-1">
                 <Shield className="w-3 h-3 text-amber-400" />
-                {currentRole.replace('_', ' ')} Portal
+                Super Admin Account
               </p>
             </div>
           </div>
         </div>
 
-        {/* Quick Role Switcher Banner */}
-        <div className="p-3 bg-amber-50 border-b border-amber-100 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-amber-700" />
-            <span className="text-xs font-semibold text-amber-900">Portal View:</span>
-          </div>
-          <select
-            value={currentRole}
-            onChange={(e) => setRole(e.target.value as any)}
-            className="text-xs font-bold bg-white text-blue-900 border border-amber-200 rounded-lg px-2 py-1 shadow-xs focus:outline-none"
-          >
-            <option value="super_admin">Super Admin</option>
-            <option value="teacher">Teacher</option>
-            <option value="student">Student</option>
-            <option value="parent">Parent</option>
-          </select>
+        {/* Real-time Status Badge */}
+        <div className="p-2.5 bg-emerald-50 border-b border-emerald-100 flex items-center justify-between text-xs font-bold text-emerald-900">
+          <span className="flex items-center gap-2 text-[11px]">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Firestore Real-Time Data</span>
+          </span>
+          <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-extrabold">
+            ACTIVE
+          </span>
         </div>
 
         {/* Menu Items */}
@@ -201,10 +194,10 @@ export const DrawerNav: React.FC = () => {
               setCurrentScreen('welcome');
               setIsDrawerOpen(false);
             }}
-            className="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-rose-600 hover:bg-rose-50 flex items-center gap-2"
+            className="w-full text-left px-3 py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-200/80 flex items-center gap-2"
           >
             <LogOut className="w-4 h-4 text-rose-600" />
-            <span>Switch / Logout</span>
+            <span>Portal Security Lock</span>
           </button>
 
           <div className="text-[10px] text-center text-slate-400 pt-1">
@@ -215,3 +208,4 @@ export const DrawerNav: React.FC = () => {
     </div>
   );
 };
+

@@ -15,12 +15,12 @@ import {
 export const mockUserProfiles: Record<string, UserProfile> = {
   super_admin: {
     id: 'admin_1',
-    name: 'Dr. Rajesh Sharma',
+    name: 'Manjunath Sarjapur',
     role: 'super_admin',
-    email: 'rajesh.sharma@challengecoaching.com',
+    email: 'manjunathsarjapur1995@gmail.com',
     phone: '+91 98765 43210',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    department: 'Director & Physics Head',
+    department: 'Director & Managing Head',
   },
   teacher: {
     id: 'teacher_1',
