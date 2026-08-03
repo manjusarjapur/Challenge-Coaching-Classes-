@@ -1,0 +1,6 @@
+{
+  "name": "Challenge Coaching Classes",
+  "description": "Comprehensive coaching management mobile application with Super Admin, Teacher, Student, and Parent dashboards, study notes, MCQ tests, attendance tracking, and analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
